@@ -1,0 +1,36 @@
+# ---- Generation ----
+torch>=2.3
+diffusers>=0.30
+transformers>=4.44
+accelerate>=0.33
+sentencepiece>=0.2
+safetensors>=0.4
+# Optional, for memory-efficient loading on 8GB VRAM:
+# bitsandbytes>=0.43 ; platform_system == "Linux" or platform_system == "Windows"
+
+# ---- Measurement instruments ----
+# GeoCalib is NOT on PyPI — install from the official ECCV 2024 repo:
+geocalib @ git+https://github.com/cvg/GeoCalib#egg=geocalib
+torchvision>=0.18
+# Grounding DINO (object detection for the two-object compression metric):
+# installed from the official repo — see docs/protocol.md §Instrument
+# groundingdino-py>=0.4
+
+# ---- Controls & metrics ----
+open-clip-torch>=2.24  # CLIPScore control metric
+lpips>=0.1             # perceptual-similarity control metric
+piq                    # optional image-quality utilities
+
+# ---- Data & analysis ----
+pandas>=2.2
+numpy>=1.26
+scipy>=1.13
+statsmodels>=0.14      # mixed-effects models
+scikit-learn>=1.5      # ridge probes (Phase 7)
+krippendorff>=0.6      # inter-rater agreement (Phase 8)
+Pillow>=10.0
+pyarrow>=15            # parquet for measurement tables
+
+# ---- Utilities ----
+tqdm>=4.66
+pyyaml>=6.0

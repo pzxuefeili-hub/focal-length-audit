@@ -1,0 +1,23 @@
+# Large assets are archived on Zenodo, not git
+raw/
+generated/
+measurements/*.parquet
+*.ckpt
+*.safetensors
+*.bin
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Secrets never belong here
+.env
+*.key
