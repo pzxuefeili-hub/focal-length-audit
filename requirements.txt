@@ -9,8 +9,10 @@ safetensors>=0.4
 # bitsandbytes>=0.43 ; platform_system == "Linux" or platform_system == "Windows"
 
 # ---- Measurement instruments ----
-# GeoCalib is NOT on PyPI — install from the official ECCV 2024 repo:
-geocalib @ git+https://github.com/cvg/GeoCalib#egg=geocalib
+# GeoCalib is NOT on PyPI — install it separately AFTER requirements.txt:
+#   git clone https://github.com/cvg/GeoCalib
+#   pip install -e GeoCalib
+# (see docs/SMOKE_TEST_CHECKLIST.md for the exact steps)
 torchvision>=0.18
 # Grounding DINO (object detection for the two-object compression metric):
 # installed from the official repo — see docs/protocol.md §Instrument
