@@ -50,9 +50,10 @@ focal-length-audit/
 
 ## Quick start (smoke test)
 
-Validates the full pipeline on one machine in ~10 minutes:
-SDXL generates one image → GeoCalib calibrates it → vertical FoV is printed.
-Device-adaptive (CUDA / Apple MPS / CPU).
+Phase 1 exit gate: generates one image per generator with the frozen configurations
+(SDXL 30 steps / guidance 7.0 · SD3.5 40 / 4.5 · FLUX.1-schnell 4 / 0.0),
+then calibrates each with GeoCalib (three passes, median vFoV).
+Device-adaptive (CUDA / Apple MPS / CPU). First run downloads ~45GB of weights.
 
 ```bash
 pip install -r requirements.txt
