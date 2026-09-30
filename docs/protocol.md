@@ -199,7 +199,7 @@ Camera clause position (start vs end) · guidance scale (SDXL 5.0/9.0, SD3.5 3.0
 - [ ] Create GitHub repository (this layout + requirements + README)
 - [ ] Accept SD3.5 Medium terms on Hugging Face
 - [ ] Download all model weights; record commit hashes
-- [ ] Confirm WildCamera repository license file
+- [x] Confirm WildCamera repository license file (Apache-2.0, verified 2026-09-30; main @ 7aae666)
 - [ ] Finalize this protocol; release on GitHub → Zenodo DOI
 - [ ] Run smoke test (one image + one calibration per model) — `scripts/smoke_test.py`
 - [ ] Email instructor: protocol sign-off + ethics-review question + rater compensation + Talon access (CC major professor per instructor's instruction)
@@ -218,4 +218,4 @@ Notes: SDXL smoke confirms the full chain (generation → GeoCalib ×3 median). 
 
 Weight hashes (record at download):
 - SDXL base 1.0: commit `<fill>` · SD3.5 Medium: commit `<fill>` · FLUX.1-schnell: commit `<fill>`
-- GeoCalib pinhole weights: release v1.0 · WildCamera: commit `<fill, license confirmed>`
+- GeoCalib pinhole weights: release v1.0 · WildCamera: commit 7aae666 (main, Apache-2.0 confirmed)
