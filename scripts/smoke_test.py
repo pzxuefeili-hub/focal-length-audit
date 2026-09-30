@@ -25,6 +25,11 @@ import sys
 import time
 from pathlib import Path
 
+import os
+
+# Reduce VRAM fragmentation on 8GB cards (recommended by PyTorch's own OOM message).
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+
 import torch
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "generated" / "smoke"
@@ -37,6 +42,11 @@ SMOKE_SCENE = (
 NUMERIC_CLAUSE = ", photographed with a 50mm lens"
 PROMPT = SMOKE_SCENE + NUMERIC_CLAUSE
 SEED = 0  # study seeds are the integers 0–7; smoke uses 0
+
+# Machine roles per the blueprint compute plan:
+#   RTX 4060 (8GB) -> SDXL + the measurement pipeline
+#   Apple M4 Pro   -> SD3.5 Medium + FLUX.1-schnell (unified memory fits both)
+# Use --models sdxl on the 4060 laptop to skip the models that OOM there.
 
 
 def detect_device() -> str:
@@ -197,14 +207,24 @@ def calibrate(img_path: Path) -> None:
 
 
 def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Phase 1 smoke test")
+    parser.add_argument("--models", default="sdxl,sd35,flux",
+                        help="comma list: sdxl,sd35,flux (4060 laptop: use '--models sdxl')")
+    args = parser.parse_args()
+    wanted = [m.strip().lower() for m in args.models.split(",")]
+
+    all_jobs = {"sdxl": ("SDXL base 1.0", gen_sdxl),
+                "sd35": ("SD3.5 Medium", gen_sd35),
+                "flux": ("FLUX.1-schnell", gen_flux)}
+
     device = detect_device()
     print(f"Device: {device_name()}\n")
 
-    jobs = [("SDXL base 1.0", gen_sdxl),
-            ("SD3.5 Medium", gen_sd35),
-            ("FLUX.1-schnell", gen_flux)]
     results = {}
-    for name, fn in jobs:
+    for key in wanted:
+        name, fn = all_jobs[key]
         print(f"[gen] {name}")
         try:
             path = fn(device)

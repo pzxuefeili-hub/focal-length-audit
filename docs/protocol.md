@@ -208,9 +208,13 @@ Camera clause position (start vs end) · guidance scale (SDXL 5.0/9.0, SD3.5 3.0
 
 | Machine | Device | Model | Inference (s) | vFoV median (3-pass, °) | Spread (°) | Date |
 |---|---|---|---|---|---|---|
-| | | SDXL | | | | |
-| | | SD3.5 | | | | |
-| | | FLUX | | | | |
+| RTX 4060 Laptop (8GB) | cuda | SDXL | 25.9 | 39.78 | 0.00 | 2026-09-29 |
+| RTX 4060 Laptop (8GB) | cuda | SD3.5 | OOM at inference (weights downloaded; model exceeds 8GB VRAM even with CPU offload — runs on M4 Pro per compute plan) | — | — | 2026-09-29 |
+| RTX 4060 Laptop (8GB) | cuda | FLUX | not run (16GB system RAM exhausted during download; assigned to M4 Pro per compute plan) | — | — | 2026-09-29 |
+| M4 Pro | mps | SD3.5 | | | | |
+| M4 Pro | mps | FLUX | | | | |
+
+Notes: SDXL smoke confirms the full chain (generation → GeoCalib ×3 median). Requested 50mm ⇒ nominal vFoV ≈ 27.0°; measured 39.78° shows the model's loose adherence — expected, and exactly what RQ1 will quantify. GeoCalib weights (pinhole) fetched from official v1.0 release. Hugging Face gated-repo access granted for SD3.5 Medium and FLUX.1-schnell on 2026-09-29.
 
 Weight hashes (record at download):
 - SDXL base 1.0: commit `<fill>` · SD3.5 Medium: commit `<fill>` · FLUX.1-schnell: commit `<fill>`
