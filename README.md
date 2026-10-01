@@ -13,7 +13,7 @@
 | Phase | Content | Status |
 |---|---|---|
 | Phase 1 | Repo, frozen protocol, Zenodo DOI, smoke tests | 🚧 in progress |
-| Phase 2 | Scene acquisition (Blender render + 80 reference photographs) | pending |
+| Phase 2 | Scene acquisition (Blender render + 80 reference photographs) | 🚧 rung A rendered (70/70, `scripts/build_rungA.py`) |
 | Phase 3 | **Instrument validation (4-rung ladder) — the gate** | pending |
 | Phase 4 | Pilot run (80 images) | pending |
 | Phase 5 | Core scan (1,280+ images) | pending |
