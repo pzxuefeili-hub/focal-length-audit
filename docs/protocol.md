@@ -139,7 +139,7 @@ Six aerial scenes: suburban neighborhood / farmland / parking lot / soccer field
 |---|---|---|---|
 | A | Blender renders, 5 scenes at 16/24/35/50/85/135/200mm, both protocols | 70 | exact |
 | B | Real photos, 8 scenes at 24/35/50/70/105mm, both protocols (fixed-position & fixed-framing) | 80 | EXIF focal length |
-| C | Center crops of fixed-position 24mm frames reproducing 35/50/70/105/200mm FoV (crop side = 24/f × original; resize to 1024²; shoot B at full resolution — 200mm crop keeps 12% of side). **Sensitivity check (added 2026-09-30 per instructor review):** a second 200mm-equivalent center crop taken from the **105mm frame** instead of the 24mm frame — at 105mm the crop keeps ~53% of the short side, so it is not resolution-starved. Both 200mm variants are pre-registered; primary analysis uses the 24mm-based crop, the 105mm-based crop is the sensitivity analysis. | 48 | exact |
+| C | Center crops of fixed-position 24mm frames reproducing 35/50/70/105/200mm FoV (crop side = 24/f × original; resize to 1024²; shoot B at full resolution — at 6240×4160 the 200mm crop keeps 24/200 = 12% of side ≈ 499 px short side). **Sensitivity check (added 2026-09-30 per instructor review):** a second 200mm-equivalent center crop taken from the **105mm frame** instead of the 24mm frame — crop factor 105/200 = 52.5%, ≈ 2184 px short side, not resolution-starved. Both 200mm variants are pre-registered; primary analysis uses the 24mm-based crop, the 105mm-based crop is the sensitivity analysis. | 48 | exact |
 | D | Rungs B+C through SDXL img2img, strength 0.3, prompt "a photograph" | 120 | inherited from source |
 | Aerial | Drone photos at gimbal pitch −90/−60/−45/−30° over 6 sites | 24 | flight metadata |
 
@@ -215,6 +215,8 @@ Camera clause position (start vs end) · guidance scale (SDXL 5.0/9.0, SD3.5 3.0
 | UNT Talon (A100 40GB) | cuda | FLUX | | | | |
 
 Notes: SDXL smoke confirms the full chain (generation → GeoCalib ×3 median). Requested 50mm ⇒ nominal vFoV ≈ 27.0°; measured 39.78° shows the model's loose adherence — expected, and exactly what RQ1 will quantify. GeoCalib weights (pinhole) fetched from official v1.0 release. Hugging Face gated-repo access granted for SD3.5 Medium and FLUX.1-schnell on 2026-09-29.
+
+Reference camera (body confirmed 2026-09-30 from EXIF of an existing photograph): **Canon EOS RP — full-frame 26.2MP (6240×4160) + RF 24–105mm** (F4-7.1 IS STM per f/6.3-at-68mm EXIF trace; lens engraving to be verified on arrival, 2026-10-07±). Full-frame ⇒ EXIF focal length = true focal length, no crop-factor conversion; instructor's full-frame condition for the "one-to-one" reading is satisfied.
 
 Weight hashes (Hugging Face repo revisions at download, 2026-09-29):
 - SDXL base 1.0: `4621659` · SD3.5 Medium: `b940f67` · FLUX.1-schnell: `741f7c3`

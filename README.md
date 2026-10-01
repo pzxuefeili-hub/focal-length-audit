@@ -71,7 +71,7 @@ python scripts/smoke_test.py
 
 One model never moves across device families — same-seed reruns stay comparable (no CUDA/MPS mixing per model).
 
-- Reference photographs: *<camera body + lens — fill in on arrival, full-frame vs APS-C affects EXIF conversion>*
+- Reference photographs: **Canon EOS RP** (full-frame, 26.2MP, 6240×4160) + **RF 24–105mm** (F4-7.1 IS STM per EXIF aperture trace at 68mm → f/6.3; verify lens engraving on arrival). Full-frame ⇒ EXIF focal length is the true focal length, no crop conversion. EXIF focal lengths to be verified against the shot log at import.
 - Aerial references (stretch): DJI Mini 2 (24mm-equivalent, 83° FoV, gimbal −90°~0°)
 
 ## Reproducibility & registration
