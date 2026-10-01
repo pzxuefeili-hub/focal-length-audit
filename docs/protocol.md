@@ -195,7 +195,7 @@ Camera clause position (start vs end) · guidance scale (SDXL 5.0/9.0, SD3.5 3.0
 
 ## 13. Phase 1 checklist (this week)
 
-- [ ] Read the 8-paper shortlist; write a one-page gap note
+- [x] Read the 8-paper shortlist; write a one-page gap note → `docs/GAP_NOTE.md`
 - [ ] Create GitHub repository (this layout + requirements + README)
 - [ ] Accept SD3.5 Medium terms on Hugging Face
 - [ ] Download all model weights; record commit hashes
