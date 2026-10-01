@@ -140,7 +140,7 @@ Six aerial scenes: suburban neighborhood / farmland / parking lot / soccer field
 | A | Blender renders, 5 scenes at 16/24/35/50/85/135/200mm, both protocols | 70 | exact |
 | B | Real photos, 8 scenes at 24/35/50/70/105mm, both protocols (fixed-position & fixed-framing) | 80 | EXIF focal length |
 | C | Center crops of fixed-position 24mm frames reproducing 35/50/70/105/200mm FoV (crop side = 24/f × original; resize to 1024²; shoot B at full resolution — at 6240×4160 the 200mm crop keeps 24/200 = 12% of side ≈ 499 px short side). **Sensitivity check (added 2026-09-30 per instructor review):** a second 200mm-equivalent center crop taken from the **105mm frame** instead of the 24mm frame — crop factor 105/200 = 52.5%, ≈ 2184 px short side, not resolution-starved. Both 200mm variants are pre-registered; primary analysis uses the 24mm-based crop, the 105mm-based crop is the sensitivity analysis. | 48 | exact |
-| D | Rungs B+C through SDXL img2img, strength 0.3, prompt "a photograph" | 120 | inherited from source |
+| D | Rungs B+C through SDXL img2img, strength 0.3, prompt "a photograph". **Count stated explicitly (per instructor note, 2026-10-01):** rung D = all of rung B (80) + all of rung C (48) = **128 images** | 128 | inherited from source |
 | Aerial | Drone photos at gimbal pitch −90/−60/−45/−30° over 6 sites | 24 | flight metadata |
 
 **Instrument gate criteria (committed):**
