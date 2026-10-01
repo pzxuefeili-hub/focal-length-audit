@@ -31,7 +31,7 @@ side by side, with the measured vertical field of view under each image)*
 focal-length-audit/
 ├── raw/                  # Ground-truth reference photographs (EXIF-verified)
 │   ├── rungB/            #   80 multi-focal-length real photographs (Protocol A/B)
-│   ├── rungC/            #   40 scripted center-crops from the 24mm frame
+│   ├── rungC/            #   48 scripted center-crops (40 from the 24mm frame + 8 sensitivity crops from the 105mm frame)
 │   ├── rungD/            #   120 img2img perturbations (strength 0.3)
 │   └── aerial/           #   24 drone frames at known gimbal pitches (stretch)
 ├── generated/            # AI-generated images + sidecar metadata JSON
@@ -60,11 +60,17 @@ pip install -r requirements.txt
 python scripts/smoke_test.py
 ```
 
-## Hardware
+## Hardware (fixed device per model — instructor-approved 2026-09-30)
 
-- NVIDIA RTX 4060 (8GB) — SDXL generation + measurement pipeline
-- Apple M4 Pro — FLUX.1-schnell + SD3.5 generation + Blender rendering
-- UNT Talon cluster (NVIDIA A100 40GB, optional accelerator)
+| Task | Device |
+|---|---|
+| SDXL generation + all measurement | NVIDIA RTX 4060 Laptop (8GB, CUDA) |
+| SD3.5 Medium generation | UNT Talon (NVIDIA A100 40GB, CUDA) |
+| FLUX.1-schnell generation | UNT Talon (NVIDIA A100 40GB, CUDA) |
+| Blender rendering | Apple M4 Pro |
+
+One model never moves across device families — same-seed reruns stay comparable (no CUDA/MPS mixing per model).
+
 - Reference photographs: *<camera body + lens — fill in on arrival, full-frame vs APS-C affects EXIF conversion>*
 - Aerial references (stretch): DJI Mini 2 (24mm-equivalent, 83° FoV, gimbal −90°~0°)
 
@@ -76,6 +82,6 @@ python scripts/smoke_test.py
 
 ## License
 
-- Code: MIT (or Apache-2.0, decide at release)
+- Code: Apache-2.0 (see LICENSE)
 - Reference photographs: CC BY 4.0
-- Generated images: accompanied by the respective model license notes (SDXL — Stability AI Community License terms; FLUX.1-schnell — Apache-2.0; SD3.5 — Stability Community License). Model weights are **not** redistributed; download from Hugging Face under their own terms.
+- Generated images: accompanied by the respective model license notes (SDXL — CreativeML Open RAIL++-M; FLUX.1-schnell — Apache-2.0; SD3.5 — Stability Community License). Model weights are **not** redistributed; download from Hugging Face under their own terms.
