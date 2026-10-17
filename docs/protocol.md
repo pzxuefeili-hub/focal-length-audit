@@ -197,22 +197,22 @@ Camera clause position (start vs end) · guidance scale (SDXL 5.0/9.0, SD3.5 3.0
 
 - [x] Read the 8-paper shortlist; write a one-page gap note → `docs/GAP_NOTE.md`
 - [ ] Create GitHub repository (this layout + requirements + README)
-- [ ] Accept SD3.5 Medium terms on Hugging Face
-- [ ] Download all model weights; record commit hashes
+- [x] Accept SD3.5 Medium terms on Hugging Face (2026-09-29)
+- [x] Download all model weights; record commit hashes (2026-10-17; full sha256 in `weight_hashes.txt`)
 - [x] Confirm WildCamera repository license file (Apache-2.0, verified 2026-09-30; main @ 7aae666)
 - [ ] Finalize this protocol; release on GitHub → Zenodo DOI
-- [ ] Run smoke test (one image + one calibration per model) — `scripts/smoke_test.py`
-- [ ] Email instructor: protocol sign-off + ethics-review question + rater compensation + Talon access (CC major professor per instructor's instruction)
+- [x] Run smoke test (one image + one calibration per model) — `scripts/smoke_test.py` (PASSED on Talon H100 NVL, 2026-10-17; SDXL chain already confirmed on RTX 4060, 2026-09-29)
+- [x] Email instructor: protocol sign-off + ethics-review question + rater compensation + Talon access (sent 2026-09-30; instructor reply 2026-09-30 with sign-off conditions — all now addressed)
 
 ## 14. Phase-1 record
 
 | Machine | Device | Model | Inference (s) | vFoV median (3-pass, °) | Spread (°) | Date |
 |---|---|---|---|---|---|---|
 | RTX 4060 Laptop (8GB) | cuda | SDXL | 25.9 | 39.78 | 0.00 | 2026-09-29 |
-| RTX 4060 Laptop (8GB) | cuda | SD3.5 | OOM at inference (weights downloaded; model exceeds 8GB VRAM even with CPU offload — **fixed device: UNT Talon A100**, assigned 2026-09-30 per instructor review; no CUDA/MPS mixing per model) | — | — | 2026-09-29 |
-| RTX 4060 Laptop (8GB) | cuda | FLUX | not run (16GB system RAM exhausted during download; **fixed device: UNT Talon A100**, assigned 2026-09-30 per instructor review) | — | — | 2026-09-29 |
-| UNT Talon (A100 40GB) | cuda | SD3.5 | | | | |
-| UNT Talon (A100 40GB) | cuda | FLUX | | | | |
+| RTX 4060 Laptop (8GB) | cuda | SD3.5 | OOM at inference (weights downloaded; model exceeds 8GB VRAM even with CPU offload — **fixed device: UNT Talon**, assigned 2026-09-30 per instructor review; no CUDA/MPS mixing per model) | — | — | 2026-09-29 |
+| RTX 4060 Laptop (8GB) | cuda | FLUX | not run (16GB system RAM exhausted during download; **fixed device: UNT Talon**, assigned 2026-09-30 per instructor review) | — | — | 2026-09-29 |
+| UNT Talon ci-l-cgnndb4 (H100 NVL 95GB) | cuda | SD3.5 | 29.0 | 62.94 | 0.00 | 2026-10-17 |
+| UNT Talon ci-l-cgnndb4 (H100 NVL 95GB) | cuda | FLUX | 27.5 | 38.17 | 0.00 | 2026-10-17 |
 
 Notes: SDXL smoke confirms the full chain (generation → GeoCalib ×3 median). Requested 50mm ⇒ nominal vFoV ≈ 27.0°; measured 39.78° shows the model's loose adherence — expected, and exactly what RQ1 will quantify. GeoCalib weights (pinhole) fetched from official v1.0 release. Hugging Face gated-repo access granted for SD3.5 Medium and FLUX.1-schnell on 2026-09-29.
 
@@ -221,3 +221,8 @@ Reference camera (body confirmed 2026-09-30 from EXIF of an existing photograph)
 Weight hashes (Hugging Face repo revisions at download, 2026-09-29):
 - SDXL base 1.0: `4621659` · SD3.5 Medium: `b940f67` · FLUX.1-schnell: `741f7c3`
 - GeoCalib pinhole weights: release v1.0 · WildCamera: commit 7aae666 (main, Apache-2.0 confirmed)
+
+Phase-1 gate record (2026-10-17, Talon node ci-l-cgnndb4, torch 2.6.0+cu124):
+- Smoke test PASSED for SD3.5 Medium and FLUX.1-schnell (`scripts/smoke_test.py --models sd35,flux`, log `smoke.log`); 3-pass spread 0.00° on both = deterministic reruns. vFoV deviation from nominal 50 mm (62.94° / 38.17° vs ≈27.0°) reflects each model's learned focal-length prior — quantified across the focal ladder in Phases 2-7; the smoke test gates on pipeline reproducibility, not focal accuracy.
+- Full sha256 of all 13 downloaded safetensors shards (SD3.5 Medium x6 @ b940f670, FLUX.1-schnell x7 @ 741f7c3c) recorded in `weight_hashes.txt` (generated on Talon, HF cache `~/.cache/huggingface/hub`).
+- WildCamera license check PASSED: code Apache-2.0 (permissive; keep license text, cite zhu2023tame); we use only the pretrained checkpoint `wild_camera_all.pth`, no benchmark dataset redistribution.

@@ -65,8 +65,8 @@ python scripts/smoke_test.py
 | Task | Device |
 |---|---|
 | SDXL generation + all measurement | NVIDIA RTX 4060 Laptop (8GB, CUDA) |
-| SD3.5 Medium generation | UNT Talon (NVIDIA A100 40GB, CUDA) |
-| FLUX.1-schnell generation | UNT Talon (NVIDIA A100 40GB, CUDA) |
+| SD3.5 Medium generation | UNT Talon (NVIDIA H100 NVL 95GB, CUDA) |
+| FLUX.1-schnell generation | UNT Talon (NVIDIA H100 NVL 95GB, CUDA) |
 | Blender rendering | Apple M4 Pro |
 
 One model never moves across device families — same-seed reruns stay comparable (no CUDA/MPS mixing per model).
