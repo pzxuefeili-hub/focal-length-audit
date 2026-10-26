@@ -1,87 +1,172 @@
-# Do Text-to-Image Models Understand Focal Length?
+# Does the Number Matter? Measuring Whether Text-to-Image Models Treat Focal-Length Language as Physics or as Style
 
-**A physics-grounded measurement protocol for auditing focal-length prompt adherence in text-to-image diffusion models.**
+**A pre-registered measurement audit of focal-length prompt adherence in text-to-image diffusion models (Milestone 3: Implementation & Complete Writeup, DTSC 5525).**
 
-> Pre-registered measurement study: do models obey "24mm" as a physical instruction,
-> or merely as a style keyword? We build and validate a measurement instrument
-> (single-image geometric calibration), then quantify adherence with a
-> pre-committed compliance slope β across three prompt-register families
-> (numeric / descriptive / genre) and three text-encoder families (CLIP / CLIP+T5 / T5).
+When a user writes "photographed with a 24mm lens" in a text-to-image prompt, does the
+model render the optics of a 24mm lens, or merely the *style* associated with one?
+This project builds the measurement system that answers the question with geometric
+ground truth: a single-image camera calibrator (GeoCalib) is validated on a ladder of
+reference imagery with independently known focal lengths, and only then applied to
+generated images. The headline quantity is the **adherence slope β** of
+y = ln(tan(vFoV/2)) against ln(focal length): exactly −1 for a physically faithful
+model, 0 for an ignored number. This milestone implements the full pipeline and
+reports the first validation rungs; generated-image results are gated behind
+instrument validation and are deliberately not claimed here.
 
-## Status
+## Status (as of Milestone 3, 2026-10-25)
 
 | Phase | Content | Status |
 |---|---|---|
-| Phase 1 | Repo, frozen protocol, Zenodo DOI, smoke tests | 🚧 in progress |
-| Phase 2 | Scene acquisition (Blender render + 80 reference photographs) | 🚧 rung A rendered (70/70, `scripts/build_rungA.py`) |
-| Phase 3 | **Instrument validation (4-rung ladder) — the gate** | pending |
-| Phase 4 | Pilot run (80 images) | pending |
-| Phase 5 | Core scan (1,280+ images) | pending |
-| Phase 8 | Human blind rating (280 pairs, 2 raters) | pending |
+| Phase 1 | Repo, frozen protocol, weight hashes, smoke tests on GPU | ✅ DONE (2026-10-17, Talon H100 NVL; 3-pass spread 0.00°) |
+| Phase 2 | Reference imagery | ✅ DONE — rung A: 70 Blender renders; rung B: 80 locked photos / 300 actuations, full audit trail |
+| Phase 3 | **Instrument validation gate (rungs A–D)** | 🚧 rung A measured (this paper); rungs C/D scripts finalizing; **no instrument run on locked photos until protocol DOI exists** |
+| Phase 4 | Pilot run (80 generated images) | pending (after Phase 3 gate) |
+| Phase 5 | Core sweep (5,888 images, full matrix) | pending |
+| Phase 8 | Human blind rating (280 pairs, 2 raters) | pending (ethics determination with UNT RIC submitted) |
 | Phase 11 | Report, slides, public release | pending |
 
-## The one-figure summary
+## Environment setup
 
-*(added after Phase 5 — same prompt, requested focal length 24mm vs 200mm,
-side by side, with the measured vertical field of view under each image)*
+- **OS:** Windows 11 (dev) / Linux (UNT Talon cluster, compute). All scripts run on both; GPU code is device-adaptive (CUDA / Apple MPS / CPU).
+- **Python:** 3.12 (3.13 works for the analysis-only path; the generation stack was built and hash-pinned under 3.12/3.13 on Talon).
+- **Install:**
+
+```bash
+pip install -r requirements.txt
+# GeoCalib is NOT on PyPI (measurement instrument):
+git clone https://github.com/cvg/GeoCalib
+pip install -e GeoCalib
+```
+
+- **Key pinned artifacts** (see `weight_hashes.txt` for the full sha256 list, and `docs/protocol.md` §3/§13):
+  - SDXL base 1.0 — Hugging Face revision `4621659`
+  - SD3.5 Medium — revision `b940f67` (gated repo; accept terms on Hugging Face first)
+  - FLUX.1-schnell — revision `741f7c3` (gated repo)
+  - GeoCalib pinhole weights — official release v1.0
+  - WildCamera — GitHub commit `7aae666` (Apache-2.0; backup instrument)
+- **Hardware:** SD3.5 Medium and FLUX.1-schnell run **only** on UNT Talon (NVIDIA H100 NVL 95GB) — fixed device per model, instructor-approved 2026-09-30; no CUDA/MPS mixing per model. SDXL runs on an RTX 4060 Laptop (8GB). First model download is ~40–45 GB.
+- **Secrets:** `HF_TOKEN` environment variable with Hugging Face gated-repo access (granted 2026-09-29 for SD3.5 and FLUX).
 
 ## Repository layout
 
 ```
 focal-length-audit/
-├── raw/                  # Ground-truth reference photographs (EXIF-verified)
-│   ├── rungB/            #   80 multi-focal-length real photographs (Protocol A/B)
-│   ├── rungC/            #   48 scripted center-crops (40 from the 24mm frame + 8 sensitivity crops from the 105mm frame)
-│   ├── rungD/            #   120 img2img perturbations (strength 0.3)
-│   └── aerial/           #   24 drone frames at known gimbal pitches (stretch)
-├── generated/            # AI-generated images + sidecar metadata JSON
-├── measurements/         # Tidy measurement tables (one row per image)
+├── raw/                      # Ground-truth reference imagery
+│   ├── rungA/                #   70 Blender renders (7 focal lengths x 2 protocols x 5 scenes,
+│   │                         #   textured; 1024x1024) + per-frame JSON metadata  [INCLUDED]
+│   ├── rungB/                #   MANIFEST_80frames.csv (SHA-256 of every locked frame),
+│   │                         #   RAW_MATCHING.csv (frame <-> .CR3 one-to-one map)  [INCLUDED]
+│   ├── rungC/                #   (pending: scripted center-crops of rung B 24mm frames)
+│   ├── rungD/                #   (pending: img2img re-renders of rungs B+C)
+│   └── aerial/               #   (stretch: drone frames at known gimbal pitch)
+├── generated/smoke/          # Smoke-test outputs (PNG + sidecar JSON)
+├── measurements/             # rungA_geocalib_v2.csv — 70 rows, one per calibrated frame
 ├── analysis/
-│   ├── figures/          # Publication figures (Figure 1–7)
-│   └── tables/           # Statistical tables (Table 3–5)
-├── prompts/              # Frozen prompt suites (three registers)
-├── scripts/              # Generation / calibration / analysis pipelines
+│   ├── make_figures.py       # Regenerates Figures 1–3 of the paper from the CSV (<10 s)
+│   ├── figures/              # fig1_pipeline.png, fig2_rungA_vfov.png, fig3_rungA_error.png
+│   └── tables/               # (paper tables are plain text; regenerated by hand from the CSV)
+├── prompts/                  # (frozen prompt suites land here in Phase 4/5)
+├── scripts/
+│   ├── build_rungA.py        # Parametric Blender scene construction + focal-ladder rendering
+│   ├── calibrate_rungA.py    # Batch GeoCalib: 3 passes/image, fixed torch seed 0, median vFoV -> CSV
+│   └── smoke_test.py         # Phase-1 gate: 1 generation + 1 calibration per model
 ├── docs/
-│   ├── protocol.md       # Pre-registered protocol (frozen, DOI on Zenodo)
-│   └── AI_USAGE_LOG.md   # Required log of AI assistance
+│   ├── protocol.md           # Pre-registered protocol v2 (frozen pending DOI)
+│   ├── GAP_NOTE.md           # One-page gap analysis of the 8-paper shortlist
+│   ├── MATERIAL_ACCOUNTING_2026-10-25.md  # rung B totals: 300 shots = 80 kept + 220 retained
+│   ├── AI_USAGE_LOG.md       # Course-required AI-assistance log
+│   └── SMOKE_TEST_CHECKLIST.md
+├── weight_hashes.txt         # sha256 of all 13 downloaded safetensors shards
 ├── requirements.txt
+├── LICENSE                   # Code: Apache-2.0
 └── README.md
 ```
 
-## Quick start (smoke test)
+## How to run (step by step)
 
-Phase 1 exit gate: generates one image per generator with the frozen configurations
-(SDXL 30 steps / guidance 7.0 · SD3.5 40 / 4.5 · FLUX.1-schnell 4 / 0.0),
-then calibrates each with GeoCalib (three passes, median vFoV).
-Device-adaptive (CUDA / Apple MPS / CPU). First run downloads ~45GB of weights.
+### 0. Data preparation (already done — what is included and what is not)
+
+- **Included in this submission:** the 70 rung A renders (48 MB, `raw/rungA/`) and the
+  rung A measurement table (`measurements/rungA_geocalib_v2.csv`). Everything needed to
+  reproduce Figures 1–3 and Tables 2/3 of the paper is self-contained.
+- **Not included (size/restriction), with reproduction instructions:**
+  - *Model weights* (~45 GB, license-restricted): download from Hugging Face at the pinned
+    revisions listed above under your own accepted terms. `weight_hashes.txt` lets you
+    verify bit-level identity: `find ~/.cache/huggingface/hub -name "*.safetensors" | sort | xargs sha256sum`.
+  - *Rung B photographs* (80 locked frames, 6240×4160 JPEG + RAW ≈ 700 MB): per-frame
+    SHA-256 hashes, focal lengths, protocols, and source-file mapping are in
+    `raw/rungB/MANIFEST_80frames.csv` and `raw/rungB/RAW_MATCHING.csv`. The frames are
+    being archived on Zenodo with the frozen protocol; until the DOI is minted, the full
+    set is available from the instructor on request. Expected file structure when placed:
+    `raw/rungB/photos/<scene>/<frame>.JPG` matching the manifest's 入组文件名 column.
+  - *Blender scenes*: `scripts/build_rungA.py` regenerates all 70 renders from scratch
+    (requires Blender ≥ 4.0 with its Python environment; ~30 min on a laptop).
+
+### 1. Reproduce rung A figures and statistics (CPU only, < 1 min)
 
 ```bash
-pip install -r requirements.txt
+python analysis/make_figures.py
+```
+
+Writes `analysis/figures/fig{1,2,3}_*.png` and prints the sanity check
+(mean |err|: fixedpos 7.16°, fixedframe 15.28°) that appears in the paper.
+
+### 2. Re-run the rung A calibration from the renders (GPU, ~15 min)
+
+```bash
+python scripts/calibrate_rungA.py        # raw/rungA/*.png -> measurements CSV (3 passes per image)
+python analysis/make_figures.py          # rebuild figures from the fresh CSV
+```
+
+GeoCalib is deterministic under its fixed torch seed; expect spread 0.00° per frame.
+
+### 3. Smoke test: generation + calibration, one image per model (GPU, ~45 GB download once)
+
+```bash
+export HF_TOKEN=...            # Windows PowerShell: $env:HF_TOKEN="..."
 python scripts/smoke_test.py
 ```
 
-## Hardware (fixed device per model — instructor-approved 2026-09-30)
+Phase-1 gate: generates one image per generator at the frozen configurations
+(SDXL 30 steps / guidance 7.0 · SD3.5 40 / 4.5 · FLUX.1-schnell 4 / no CFG),
+then calibrates each three times. Expected per-model runtime ≈ 28–30 s on an
+H100 NVL after weights are cached. Verified results (2026-10-17): 3-pass spread
+0.00° on both models; recorded in `docs/protocol.md` §14.
 
-| Task | Device |
-|---|---|
-| SDXL generation + all measurement | NVIDIA RTX 4060 Laptop (8GB, CUDA) |
-| SD3.5 Medium generation | UNT Talon (NVIDIA H100 NVL 95GB, CUDA) |
-| FLUX.1-schnell generation | UNT Talon (NVIDIA H100 NVL 95GB, CUDA) |
-| Blender rendering | Apple M4 Pro |
+### 4. What is NOT runnable yet (and why — by design)
 
-One model never moves across device families — same-seed reruns stay comparable (no CUDA/MPS mixing per model).
+No instrument has been run on the locked rung B photographs, and no core-sweep
+generation has been launched. The protocol commits that instrument runs on locked
+photos begin only after the protocol is publicly registered (GitHub tag → Zenodo DOI),
+and the core matrix begins only after the Phase 3 instrument gate and the Phase 4
+pilot. The scripts for rungs C and D are being finalized; their specifications
+(exact crop geometry, img2img strength, counts) are already frozen in
+`docs/protocol.md` §7.
 
-- Reference photographs: **Canon EOS RP** (full-frame, 26.2MP, 6240×4160) + **RF 24–105mm** (F4-7.1 IS STM per EXIF aperture trace at 68mm → f/6.3; verify lens engraving on arrival). Full-frame ⇒ EXIF focal length is the true focal length, no crop conversion. EXIF focal lengths to be verified against the shot log at import.
-- Aerial references (stretch): DJI Mini 2 (24mm-equivalent, 83° FoV, gimbal −90°~0°)
+## Reference capture hardware
+
+- **Reference photographs (rung B):** Canon EOS RP (full-frame 26.2 MP, 6240×4160) +
+  RF 24–105mm F4-7.1 IS STM (engraving verified 2026-10-25; full-frame ⇒ EXIF focal =
+  true focal, no crop conversion). In-camera distortion correction OFF.
+- **Synthetic renders (rung A):** Blender 4.x, 1024×1024, 35mm-equivalent focal ladder
+  16–200mm, five scenes, two protocols (fixed framing / fixed position).
+- **Aerial (stretch, pending):** DJI Mini 2, 24mm-equivalent, gimbal −90°…0°.
 
 ## Reproducibility & registration
 
-- Protocol frozen and archived with a citable DOI before any data was inspected (Zenodo + GitHub release).
-- Every generated image carries a sidecar JSON: model, prompt id, register, focal length, seed, sampler, steps, guidance, precision, GPU type.
-- Decision rules (adherence slope β, equivalence bands, instrument pass thresholds) were committed **before** results were seen. Any post-hoc change is reported explicitly as a deviation with its reason.
+- Protocol frozen and archived with a citable DOI before any outcome data is inspected
+  (GitHub release tag → Zenodo). Until the tag exists, `docs/protocol.md` v2 is the
+  controlling document; deviations are reported with reason and timestamp.
+- Every generated image carries a sidecar JSON: model, prompt id, register, focal level,
+  seed, sampler, steps, guidance, precision, GPU type.
+- Decision rules (adherence slope β, equivalence bands, instrument pass thresholds) were
+  committed before results were seen; the rung A results reported in the paper are
+  exactly what the frozen pipeline produces from the included data.
 
-## License
+## Licenses
 
-- Code: Apache-2.0 (see LICENSE)
-- Reference photographs: CC BY 4.0
-- Generated images: accompanied by the respective model license notes (SDXL — CreativeML Open RAIL++-M; FLUX.1-schnell — Apache-2.0; SD3.5 — Stability Community License). Model weights are **not** redistributed; download from Hugging Face under their own terms.
+- Code: Apache-2.0 (see LICENSE).
+- Reference photographs: CC BY 4.0 (author Tianbo Zhang).
+- Generated images: accompany the respective model license notes (SDXL — CreativeML
+  Open RAIL++-M; SD3.5 Medium — Stability Community License; FLUX.1-schnell — Apache-2.0).
+  Model weights are **not** redistributed; download from Hugging Face under their own terms.
