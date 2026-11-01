@@ -1,6 +1,7 @@
 # Large assets are archived on Zenodo, not git
 raw/
 generated/
+release/
 measurements/*.parquet
 *.ckpt
 *.safetensors

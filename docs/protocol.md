@@ -226,3 +226,14 @@ Phase-1 gate record (2026-10-17, Talon node ci-l-cgnndb4, torch 2.6.0+cu124):
 - Smoke test PASSED for SD3.5 Medium and FLUX.1-schnell (`scripts/smoke_test.py --models sd35,flux`, log `smoke.log`); 3-pass spread 0.00° on both = deterministic reruns. vFoV deviation from nominal 50 mm (62.94° / 38.17° vs ≈27.0°) reflects each model's learned focal-length prior — quantified across the focal ladder in Phases 2-7; the smoke test gates on pipeline reproducibility, not focal accuracy.
 - Full sha256 of all 13 downloaded safetensors shards (SD3.5 Medium x6 @ b940f670, FLUX.1-schnell x7 @ 741f7c3c) recorded in `weight_hashes.txt` (generated on Talon, HF cache `~/.cache/huggingface/hub`).
 - WildCamera license check PASSED: code Apache-2.0 (permissive; keep license text, cite zhu2023tame); we use only the pretrained checkpoint `wild_camera_all.pth`, no benchmark dataset redistribution.
+
+
+## Addendum (2026-10-30, instructor edit list before tag/DOI)
+
+1. **Code license: Apache-2.0 (final).** LICENSE file and README both state Apache-2.0; an earlier email mentioning MIT was a drafting error. LICENSE, README, and this protocol agree.
+2. **Rung B QC tolerance (dated).** Protocol B (fixed framing) cone pixel-height per focal level must lie within ±4.6% of the scene mean over 35–105mm; tolerance derives from tape-measure zero-point placement (cone base center vs. rear edge, ~0.2–0.25 m at the closest distance) plus ±15–20 px silhouette readout uncertainty. 24mm brackets are re-measured against the d(24) = d(35) × 24/35 rule. Rejects and borderline frames are logged in the shooting audit report.
+3. **JPEG conversion path.** Selected CR3 frames are converted in-camera/Canon DPP to full-resolution JPEG (6240×4160, sRGB, quality-max) with no resizing and no sharpening/brightness edits; the JPEG is the analysis frame, the CR3 is archived one-to-one in RAW_MATCHING.csv; MANIFEST_80frames.csv records the SHA-256 of every analysis JPEG.
+4. **Pre-measurement camera checks (pending, before any instrument run on locked photos).** Ruled-target FoV check of the RF 24–105mm at 24/35/50/70/105mm against nominal vFoV; confirmation that in-camera distortion correction is disabled for this lens (some RF lenses force it on); both recorded here when done.
+5. **Instrument weight hashes (dated addendum after tag permitted).** In addition to the 13 generator shards, hash GeoCalib pinhole weights, wild_camera_all.pth, Grounding DINO tiny, and CLIP ViT-L/14.
+6. **Whole-chain determinism check.** One prompt + seed generated twice on Talon, image SHA-256 compared; result appended here. The 0.00° three-pass spread covers calibration repeatability only.
+7. **Dataset release.** The 80 locked photos go to a separate Zenodo dataset record (CC BY 4.0), not the code repo; faces and license plates checked, GPS and serial numbers stripped from EXIF (focal length and exposure kept).
