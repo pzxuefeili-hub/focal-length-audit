@@ -2,7 +2,7 @@
 
 ## Does the Number Matter? Measuring Whether Text-to-Image Models Treat Focal-Length Language as Physics or as Style
 
-> **STATUS: DRAFT v2 — cross-checked against the instructor's blueprint on 2026-09-29.**
+> **STATUS: FROZEN v2 — frozen on 2026-11-01; release tag `protocol-v2.0`.**
 > Freeze procedure: final read-through → commit to GitHub → tag release → Zenodo
 > mints DOI → instructor sign-off. After freezing, no silent changes: every
 > deviation is reported with its reason and timestamp, and the original
@@ -11,8 +11,8 @@
 - Investigator: Tianbo (Max) Zhang — sole investigator
 - Supervising instructor: Prof. Mohammed Aledhari
 - Project type: computational evaluation study (measurement audit)
-- Registration date: _<fill in on freeze>_
-- Zenodo DOI: _<fill in>_
+- Registration date: **2026-11-01**
+- Zenodo DOI: _<append as a dated addendum after minting>_
 
 ---
 
