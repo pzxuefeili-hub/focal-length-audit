@@ -1,0 +1,26 @@
+{
+  "date_utc": "2026-11-01T19:05:39.052721+00:00",
+  "test": "same prompt + same seed, two complete generations",
+  "passed": true,
+  "model": "stabilityai/stable-diffusion-xl-base-1.0",
+  "requested_revision": "4621659",
+  "resolved_revision": "4621659",
+  "prompt": "An empty concrete parking garage with painted lines, with an orange traffic cone in the foreground and an identical orange traffic cone farther back, photographed with a 50mm lens",
+  "seed": 0,
+  "generator_device": "cpu",
+  "steps": 30,
+  "guidance_scale": 7.0,
+  "precision": "fp16",
+  "gpu": "NVIDIA H100 NVL",
+  "torch": "2.6.0+cu124",
+  "diffusers": "0.41.0",
+  "files": [
+    "/home/tz0110@students.ad.unt.edu/work/focal-length-audit/results/determinism/sdxl_seed0_run1.png",
+    "/home/tz0110@students.ad.unt.edu/work/focal-length-audit/results/determinism/sdxl_seed0_run2.png"
+  ],
+  "sha256": [
+    "174b57249dbce99ab18d658edd7dddbd0994e0293c0776aba00eafa0496b1a4d",
+    "174b57249dbce99ab18d658edd7dddbd0994e0293c0776aba00eafa0496b1a4d"
+  ],
+  "note": "Generation-chain determinism only; separate from GeoCalib three-pass repeatability."
+}

@@ -241,3 +241,17 @@ Phase-1 gate record (2026-10-17, Talon node ci-l-cgnndb4, torch 2.6.0+cu124):
 ## Addendum (2026-11-01, Zenodo DOI minted)
 
 The GitHub release `protocol-v2.0` was archived by Zenodo and assigned DOI **10.5281/zenodo.23864719** (https://doi.org/10.5281/zenodo.23864719). This addendum records the identifier only; the frozen tag remains unchanged at commit `b77df82a43b3280de74b214528911919b67a5cf6`.
+
+## Addendum (2026-11-01, Phase-1 reproducibility checks)
+
+1. **Whole-chain determinism: PASSED.** On Talon NVIDIA H100 NVL, SDXL base 1.0 (revision `4621659`) generated the same prompt twice with CPU seed 0, 30 steps, guidance 7.0, and fp16 (torch 2.6.0+cu124; diffusers 0.41.0). Both PNG files had SHA-256 `174b57249dbce99ab18d658edd7dddbd0994e0293c0776aba00eafa0496b1a4d`. Full report: `results/determinism/determinism_report.json`.
+2. **Instrument-weight hash coverage: PASSED (4/4).** Full standard-format and JSON records: `instrument_weight_hashes.txt` and `instrument_weight_hashes.json`.
+
+| Instrument | Pinned source / file | SHA-256 |
+|---|---|---|
+| GeoCalib pinhole v1.0 | `pinhole.tar` | `86d6aeacd8bbd974c59ce39f61854e00d36911c732ad89be471476fd708722ac` |
+| WildCamera | HF dataset `Shengjie/WildCamera` @ `73b51c4d0c2f9ba33f1741f6e48a0f4e024343f9`; `wild_camera_all.pth` | `98d0764aef86901bc4be9a268ccf0e27a4ed5d5c266d60a7b3aaddf0ec5dc353` |
+| Grounding DINO tiny | `IDEA-Research/grounding-dino-tiny` @ `a2bb814dd30d776dcf7e30523b00659f4f141c71`; `model.safetensors` | `1a2412ef99bd74bcd3c2a246fa1e48581f8889a1300c9051974741314fc042f3` |
+| CLIP ViT-L/14 | `openai/clip-vit-large-patch14` @ `32bd64288804d66eefd0ccbe215aa642df71cc41`; `model.safetensors` | `a2bf730a0c7debf160f7a6b50b3aaf3703e7e88ac73de7a314903141db026dcb` |
+
+These checks performed generation reproducibility and file hashing only; no measurement instrument was run on the locked rung B/C/D images.

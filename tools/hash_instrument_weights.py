@@ -14,7 +14,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WEIGHT_SUFFIXES = {".safetensors", ".pth", ".pt", ".bin", ".ckpt"}
+# GeoCalib v1.0 distributes its pinhole checkpoint as pinhole.tar.
+WEIGHT_SUFFIXES = {".safetensors", ".pth", ".pt", ".bin", ".ckpt", ".tar"}
 FAMILIES = {
     "geocalib_pinhole": lambda text, name: "geocalib" in text and "pinhole" in text,
     "wildcamera": lambda text, name: name == "wild_camera_all.pth",
@@ -59,7 +60,9 @@ def main() -> int:
             text = str(path).lower().replace("_", "-")
             name = path.name.lower()
             if any(match(text, name) for match in FAMILIES.values()):
-                candidates[str(path.resolve())] = path.resolve()
+                # Keep the logical HF snapshot path for family detection; resolving
+                # symlinks here would replace it with an opaque cache blob name.
+                candidates[str(path)] = path.resolve()
 
     entries = []
     coverage = {family: [] for family in FAMILIES}

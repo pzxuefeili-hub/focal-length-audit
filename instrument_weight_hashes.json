@@ -1,0 +1,59 @@
+{
+  "date_utc": "2026-11-01T19:17:30.170940+00:00",
+  "roots": [
+    "/home/tz0110@students.ad.unt.edu/.cache/huggingface/hub",
+    "/home/tz0110@students.ad.unt.edu/.cache/torch",
+    "/home/tz0110@students.ad.unt.edu/work/focal-length-audit",
+    "/home/tz0110@students.ad.unt.edu/work"
+  ],
+  "entries": [
+    {
+      "path": "/home/tz0110@students.ad.unt.edu/.cache/huggingface/hub/datasets--Shengjie--WildCamera/snapshots/73b51c4d0c2f9ba33f1741f6e48a0f4e024343f9/checkpoint/wild_camera_all.pth",
+      "sha256": "98d0764aef86901bc4be9a268ccf0e27a4ed5d5c266d60a7b3aaddf0ec5dc353",
+      "bytes": 1082606527,
+      "families": [
+        "wildcamera"
+      ]
+    },
+    {
+      "path": "/home/tz0110@students.ad.unt.edu/.cache/huggingface/hub/models--IDEA-Research--grounding-dino-tiny/snapshots/a2bb814dd30d776dcf7e30523b00659f4f141c71/model.safetensors",
+      "sha256": "1a2412ef99bd74bcd3c2a246fa1e48581f8889a1300c9051974741314fc042f3",
+      "bytes": 689359096,
+      "families": [
+        "grounding_dino_tiny"
+      ]
+    },
+    {
+      "path": "/home/tz0110@students.ad.unt.edu/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/snapshots/32bd64288804d66eefd0ccbe215aa642df71cc41/model.safetensors",
+      "sha256": "a2bf730a0c7debf160f7a6b50b3aaf3703e7e88ac73de7a314903141db026dcb",
+      "bytes": 1710540580,
+      "families": [
+        "clip_vit_l_14"
+      ]
+    },
+    {
+      "path": "/home/tz0110@students.ad.unt.edu/.cache/torch/hub/geocalib/pinhole.tar",
+      "sha256": "86d6aeacd8bbd974c59ce39f61854e00d36911c732ad89be471476fd708722ac",
+      "bytes": 116074121,
+      "families": [
+        "geocalib_pinhole"
+      ]
+    }
+  ],
+  "coverage": {
+    "geocalib_pinhole": [
+      "/home/tz0110@students.ad.unt.edu/.cache/torch/hub/geocalib/pinhole.tar"
+    ],
+    "wildcamera": [
+      "/home/tz0110@students.ad.unt.edu/.cache/huggingface/hub/datasets--Shengjie--WildCamera/snapshots/73b51c4d0c2f9ba33f1741f6e48a0f4e024343f9/checkpoint/wild_camera_all.pth"
+    ],
+    "grounding_dino_tiny": [
+      "/home/tz0110@students.ad.unt.edu/.cache/huggingface/hub/models--IDEA-Research--grounding-dino-tiny/snapshots/a2bb814dd30d776dcf7e30523b00659f4f141c71/model.safetensors"
+    ],
+    "clip_vit_l_14": [
+      "/home/tz0110@students.ad.unt.edu/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/snapshots/32bd64288804d66eefd0ccbe215aa642df71cc41/model.safetensors"
+    ]
+  },
+  "missing_families": [],
+  "passed": true
+}

@@ -49,7 +49,9 @@ def main() -> int:
         use_safetensors=True,
     ).to("cuda")
     pipe.enable_attention_slicing()
-    pipe.enable_vae_slicing()
+    # Newer diffusers releases removed this optional memory-saving helper.
+    if hasattr(pipe, "enable_vae_slicing"):
+        pipe.enable_vae_slicing()
 
     hashes = []
     paths = []
