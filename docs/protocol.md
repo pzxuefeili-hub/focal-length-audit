@@ -12,7 +12,7 @@
 - Supervising instructor: Prof. Mohammed Aledhari
 - Project type: computational evaluation study (measurement audit)
 - Registration date: **2026-11-01**
-- Zenodo DOI: _<append as a dated addendum after minting>_
+- Zenodo DOI: **10.5281/zenodo.23864719** (recorded in the dated addendum below)
 
 ---
 
@@ -237,3 +237,7 @@ Phase-1 gate record (2026-10-17, Talon node ci-l-cgnndb4, torch 2.6.0+cu124):
 5. **Instrument weight hashes (dated addendum after tag permitted).** In addition to the 13 generator shards, hash GeoCalib pinhole weights, wild_camera_all.pth, Grounding DINO tiny, and CLIP ViT-L/14.
 6. **Whole-chain determinism check.** One prompt + seed generated twice on Talon, image SHA-256 compared; result appended here. The 0.00° three-pass spread covers calibration repeatability only.
 7. **Dataset release.** The 80 locked photos go to a separate Zenodo dataset record (CC BY 4.0), not the code repo; faces and license plates checked, GPS and serial numbers stripped from EXIF (focal length and exposure kept).
+
+## Addendum (2026-11-01, Zenodo DOI minted)
+
+The GitHub release `protocol-v2.0` was archived by Zenodo and assigned DOI **10.5281/zenodo.23864719** (https://doi.org/10.5281/zenodo.23864719). This addendum records the identifier only; the frozen tag remains unchanged at commit `b77df82a43b3280de74b214528911919b67a5cf6`.
