@@ -255,3 +255,7 @@ The GitHub release `protocol-v2.0` was archived by Zenodo and assigned DOI **10.
 | CLIP ViT-L/14 | `openai/clip-vit-large-patch14` @ `32bd64288804d66eefd0ccbe215aa642df71cc41`; `model.safetensors` | `a2bf730a0c7debf160f7a6b50b3aaf3703e7e88ac73de7a314903141db026dcb` |
 
 These checks performed generation reproducibility and file hashing only; no measurement instrument was run on the locked rung B/C/D images.
+
+## Addendum (2026-11-01, rung D generation complete)
+
+Rung D generation completed on the assigned NVIDIA GeForce RTX 4060 Laptop GPU: **128/128 outputs (80 rung B + 48 rung C)** using SDXL base 1.0 @ `4621659`, prompt "a photograph", strength 0.3, 30 steps, guidance 7.0, CPU seed 0, fp16, and 1024×1024 output. `tools/validate_rungD.py` verified that every image opens, all 128 JSON sidecars and manifest rows agree, source/output SHA-256 values match, and no measurement instrument was run. Large image assets remain in `raw/rungD/` under the repository's large-asset policy; the generation and validation code is tracked in git.
